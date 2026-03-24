@@ -2,3 +2,4 @@ node_modules/
 .DS_Store
 .env
 .cursorrules
+.cursor/rules/js-react-student-mentor.mdc
