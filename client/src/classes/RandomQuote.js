@@ -11,16 +11,19 @@ class RandomQuote {
   }
 
   static async getRandomQuoteViaPublicAPI() {
-    const url = `${config.PUBLIC_API_URL}/quotes/random`;
+    const url = `${config.PUBLIC_API_URL}/random`;
     const options = { headers: { 'Content-Type': 'application/json' } };
     try {
       const response = await fetch(url, options);
-      const quotes = await response.json();
-      if (Array.isArray(quotes) && quotes.length === 1) {
-        const quote = quotes[0];
-        const { _id: id, content, author } = quote;
-        if (id && content && author) {
-          return new Quote(id, content, author);
+      const data = await response.json();
+      // ZenQuotes: [{ "q": "...", "a": "author" }]
+      if (Array.isArray(data) && data.length === 1) {
+        const row = data[0];
+        const { q: text, a: author } = row;
+        if (text && author) {
+          const id =
+            globalThis.crypto?.randomUUID?.() ?? `zen-${Date.now()}`;
+          return new Quote(id, text, author);
         }
       }
     } catch (error) {
